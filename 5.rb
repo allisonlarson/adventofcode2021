@@ -1,6 +1,8 @@
 class Day5
-    def initialize(filename)
+    attr_reader :diagonalize
+    def initialize(filename, diagonalize)
         @points = Hash.new { |hash, key| hash[key] = Hash.new{ |hash, key| hash[key] = 0} }
+        @diagonalize = diagonalize
         build_graph(File.read(filename).lines)
     end
 
@@ -9,8 +11,8 @@ class Day5
     end
 
     def count_intersections
-        @points.values.inject(0) do |count, y_hash|
-            count + y_hash.values.count { |i| i > 1 }
+        @points.values.sum do |y_hash|
+            y_hash.values.count { |i| i > 1 }
         end
     end
 
@@ -29,10 +31,19 @@ class Day5
             (x1..x2).each { |x_coord| 
                 @points[x_coord][a_y] += 1
             }
+        elsif diagonalize
+            x_dir = (b_x - a_x) > 0 ? 1 : -1
+            y_dir = (b_y - a_y) > 0 ? 1 : -1
+            points_between = (b_x - a_x).abs + 1
+            points_between.times do
+                @points[a_x][a_y] += 1
+                a_x = a_x + x_dir
+                a_y = a_y + y_dir
+            end
         else
-            puts "ignored #{a_x},#{a_y} -> #{b_x},#{b_y}!"
+            puts "ignored #{a_x},#{a_y} -> #{b_x},#{b_y}!"   
         end
     end
 end
 
-puts Day5.new(ARGV[0]).count_intersections
+puts Day5.new(ARGV[0],ARGV[1]).count_intersections
