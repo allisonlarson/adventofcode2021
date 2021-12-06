@@ -1,43 +1,27 @@
 
 class Day6
     def initialize(filename)
-        data = File.read(filename).split(",")
-        @school = data.map { |f| Fish.new(f.to_i) }
+        data = File.read(filename).split(",").map(&:to_i)
+        @school = Hash.new(0)
+        data.each { |f| @school[f] += 1 }
     end
 
     def run(day_count)
         day_count.to_i.times do 
-            @school = age_fish(@school)
+            new_school = {}
+            new_school[0] = @school[1]
+            new_school[1] = @school[2]
+            new_school[2] = @school[3]
+            new_school[3] = @school[4]
+            new_school[4] = @school[5]
+            new_school[5] = @school[6] 
+            new_school[6] = @school[7] + @school[0]
+            new_school[7] = @school[8]
+            new_school[8] = @school[0]
+            @school = new_school
         end
-        puts @school.count
+        @school.values.sum
     end 
-
-    def age_fish(school_of_fish)
-        new_fish = []
-        school_of_fish.each do |f| 
-            n = *f.age
-            new_fish.push(*n)
-        end
-        school_of_fish.push(*new_fish.compact)
-        school_of_fish
-    end
-
-    class Fish
-        def initialize(age = 8)
-            @age = age
-        end
-
-        def age
-            if @age == 0
-                # perform callback to create a new one
-                @age = 6
-                [Fish.new]
-            else 
-                @age -= 1
-                []
-            end
-        end
-    end
 end
 
-day6 = Day6.new(ARGV[0]).run(ARGV[1])
+puts Day6.new(ARGV[0]).run(ARGV[1])
