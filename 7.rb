@@ -8,9 +8,19 @@ class Day7
         @data.sum { |crab| (crab - m).abs }
     end
 
+    def many_fuels
+        (0...@data.max).map do |pos|
+            fuel = @data.sum do |crab| 
+               n = (crab - pos).abs 
+               (n**2 + n) / 2
+            end
+        end.min
+    end
+
     def median_crab(data)
        l = data.length
        (data[(l-1)/2] + data[l/2])/2
     end
 end
 puts Day7.new(ARGV[0]).one_fuel
+puts Day7.new(ARGV[0]).many_fuels
